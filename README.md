@@ -26,5 +26,6 @@ A sample showing how to add ASP.NET Core Identity auth options to the basic Blaz
 
 ## Other Resources
 
+- [Stream of work on this repo]() // coming soon
 - [Accessing and Extending Authorization Claims in ASP.NET Core and Blazor](https://visualstudiomagazine.com/articles/2019/11/01/authorization-claims.aspx)
 - [Custom authorisation policies and requirements in ASP.NET Core](https://andrewlock.net/custom-authorisation-policies-and-requirements-in-asp-net-core/)
