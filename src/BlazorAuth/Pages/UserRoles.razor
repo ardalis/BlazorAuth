@@ -1,0 +1,71 @@
+﻿@page "/userroles"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject RoleManager<IdentityRole> MyRoleManager
+@inject UserManager<IdentityUser> MyUserManager
+
+<h3>Role Data</h3>
+
+<button @onclick="GetRoleData">Get Role Data</button>
+
+<p>@_authMessage</p>
+
+@if (_roles.Count() > 0)
+{
+    <ul>
+        @foreach (var role in _userRoles)
+        {
+            <li>@role</li>
+        }
+    </ul>
+}
+
+<h3>All Roles</h3>
+<ul>
+    @foreach (var role in _roles)
+    {
+        <li>@role.Name - (@role.Id)</li>
+    }
+</ul>
+
+
+<p>@_surnameMessage</p>
+
+@code {
+    private string _authMessage;
+    private string _surnameMessage;
+    private List<string> _userRoles = new List<string>();
+    private List<IdentityRole> _roles = new List<IdentityRole>();
+
+    private async Task GetRoleData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var identityUser = await MyUserManager.FindByNameAsync(user.Identity.Name);
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _authMessage = $"{user.Identity.Name} is authenticated.";
+            if (user.IsInRole("administrators"))
+            {
+                _userRoles.Add("administrators");
+            }
+            if (await MyUserManager.IsInRoleAsync(identityUser, "administrators"))
+            {
+                _userRoles.Add("administrators!");
+            }
+        }
+        else
+        {
+            _authMessage = "The user is NOT authenticated.";
+        }
+
+        _roles = MyRoleManager.Roles.ToList();
+
+        if(!user.IsInRole("administrators"))
+        {
+            await MyUserManager.AddToRoleAsync(identityUser, "administrators");
+        }
+    }
+}
